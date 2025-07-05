@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Переменные окружения
 ENV MCP_MODE=${MCP_MODE:-http}
-ENV USE_FIXED_HTTP=${USE_FIXED_HTTP:-true}  # Use fixed implementation for stability
+ENV USE_FIXED_HTTP=${USE_FIXED_HTTP:-true}
 ENV AUTH_TOKEN=${AUTH_TOKEN:?AUTH_TOKEN is required for HTTP mode}
 ENV NODE_ENV=${NODE_ENV:-production}
 ENV LOG_LEVEL=${LOG_LEVEL:-info}
