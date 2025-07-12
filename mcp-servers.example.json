@@ -1,0 +1,19 @@
+{
+    "mcpServers": {
+        "n8n-remote": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-remote",
+                "https://{YOUR_SERVER_URL}/mcp",
+                "--header",
+                "Authorization: Bearer ${AUTH_TOKEN}",
+                "--transport http-only",
+                "--debug"
+            ],
+            "env": {
+                "AUTH_TOKEN": "YOUR_SECRET_KEY"
+            }
+        }
+    }
+}
