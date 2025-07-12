@@ -1,31 +1,25 @@
-# Используем официальный Node.js образ
-FROM node:18-alpine
+# railway-optimized dockerfile for n8n-mcp
+# pulls the already‑built lightweight runtime image, so railway only has to download, not compile
+from ghcr.io/czlonkowski/n8n-mcp:latest
 
-# Устанавливаем рабочую директорию
-WORKDIR /app
+# railway injects $PORT at runtime; forward it to the app (mcp uses 3000 by default)
+env PORT=${PORT:-3000}
 
-# Копируем package.json если есть (опционально)
-# COPY package*.json ./
+# switch the mcp server to http mode so it can listen for requests from the internet
+# you **must** set an AUTH_TOKEN or AUTH_TOKEN_FILE in railway variables to pass the entrypoint check
+env MCP_MODE=http
 
-# Устанавливаем n8n-mcp
-RUN npm install -g n8n-mcp
+# optional noise reduction
+env LOG_LEVEL=info
 
-# Устанавливаем дополнительные зависимости для HTTP режима
-RUN npm install -g @modelcontextprotocol/server-sse
+# mark that we’re running inside a container for internal heuristics
+env IS_DOCKER=true
 
-# Создаем пользователя
-RUN addgroup -g 1000 n8n && \
-    adduser -u 1000 -G n8n -s /bin/sh -D n8n
+# expose the port for clarity (railway ignores this, but devs appreciate the hint)
+expose 3000
 
-USER n8n
+# reuse the upstream entrypoint which sets up the database and validation
+entrypoint ["/usr/local/bin/docker-entrypoint.sh"]
 
-# Выставляем порт
-EXPOSE $PORT
-
-# Переменные окружения
-ENV MCP_MODE=http
-ENV PORT=8080
-ENV LOG_LEVEL=error
-
-# Запускаем в HTTP режиме
-CMD ["sh", "-c", "npx n8n-mcp --mode http --port ${PORT:-8080}"]
+# explicit cmd in case you override the entrypoint somewhere else
+cmd ["node","dist/mcp/index.js"]
