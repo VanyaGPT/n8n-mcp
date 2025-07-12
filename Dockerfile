@@ -8,7 +8,7 @@ env PORT=${PORT:-3000}
 # switch the mcp server to http mode so it can listen for requests from the internet
 # you **must** set an AUTH_TOKEN or AUTH_TOKEN_FILE in railway variables to pass the entrypoint check
 env MCP_MODE=http
-env USE_FIXED_HTTP=false
+env USE_FIXED_HTTP=true
 
 # optional noise reduction
 env LOG_LEVEL=info
